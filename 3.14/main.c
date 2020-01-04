@@ -14,15 +14,15 @@ typedef struct el
 {
     int line, column, directionNo;
 }cell;
-void readData(int ***labyrinth, int *n, int *m, int *lineStart, int *columnStart, int *lineEnd, int *columnEnd, int *ptr)
+void readData(int ***board, int *n, int *lineStart, int *columnStart, int *lineEnd, int *columnEnd, int *ptr)
 {
-    fscanf(ptr, "%d%d%d%d%d%d", n, m, lineStart, columnStart, lineEnd, columnEnd);
-    (*labyrinth) = (int**) malloc((*n) * sizeof(int*));
+    fscanf(ptr, "%d%d%d%d%d%d", n, lineStart, columnStart, lineEnd, columnEnd);
+    (*board) = (int**) malloc((*n) * sizeof(int*));
     for (int i = 0; i < (*n); i++)
     {
-        (*labyrinth)[i] = (int *) malloc((*m) * sizeof(int));
-        for (int j = 0; j < (*m); j++)
-            fscanf(ptr, "%d", &(*labyrinth)[i][j]);
+        (*board)[i] = (int *) malloc((*n) * sizeof(int));
+        for (int j = 0; j < (*n); j++)
+            fscanf(ptr, "%d", &(*board)[i][j]);
     }
 }
 void printSolution(cell *solution, int solLength, int *solExists)
