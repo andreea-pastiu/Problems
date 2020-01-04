@@ -11,7 +11,7 @@ typedef struct dir
 {
     int line, column;
 }direction;
-direction dir[8]={{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+direction dir[4]={{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 typedef struct el
 {
     int line, column, directionNo;
