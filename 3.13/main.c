@@ -16,9 +16,9 @@ typedef struct el
 {
     int line, column, directionNo;
 }cell;
-void readData(int ***labyrinth, int *n, int *m, int *lineStart, int *columnStart, int *lineEnd, int *columnEnd, int *ptr)
+void readData(int ***labyrinth, int *n, int *m, int *lineStart, int *columnStart, int *ptr)
 {
-    fscanf(ptr, "%d%d%d%d%d%d", n, m, lineStart, columnStart, lineEnd, columnEnd);
+    fscanf(ptr, "%d%d%d%d", n, m, lineStart, columnStart);
     (*labyrinth) = (int**) malloc((*n) * sizeof(int*));
     for (int i = 0; i < (*n); i++)
     {
@@ -48,7 +48,7 @@ int canGo (cell *solution, int solLength, int** labyrinth, int n, int m, int lin
             v = 0;
     return v;
 }
-void solve(int **labyrinth, int n, int m, int lineStart, int columnStart, int lineEnd, int columnEnd, int solLength, cell *solution, int *solExists)
+void solve(int **labyrinth, int n, int m, int lineStart, int columnStart, int solLength, cell *solution, int *solExists)
 {
     int lineNext, columnNext;
     solution[solLength].line = lineStart;
@@ -60,7 +60,7 @@ void solve(int **labyrinth, int n, int m, int lineStart, int columnStart, int li
         lineNext = solution[solLength].line + dir[solution[solLength].directionNo].line;
         columnNext = solution[solLength].column + dir[solution[solLength].directionNo].column;
         if (canGo(solution, solLength, labyrinth, n, m, lineNext, columnNext))
-            if (lineNext == lineEnd && columnNext == columnEnd)
+            if (lineNext == 0 || lineNext == n-1 || columnNext == 0 || columnNext == n-1)
             {
                 solution[solLength + 1].line = lineNext;
                 solution[solLength + 1].column = columnNext;
@@ -68,7 +68,7 @@ void solve(int **labyrinth, int n, int m, int lineStart, int columnStart, int li
             }
             else
             {
-                solve(labyrinth, n, m, lineNext, columnNext, lineEnd, columnEnd, solLength + 1, solution, solExists);
+                solve(labyrinth, n, m, lineNext, columnNext, solLength + 1, solution, solExists);
             }
     }
 }
@@ -81,11 +81,11 @@ int main()
         printf("No input file");
         exit(0);
     }
-    int **labyrinth, n, m, lineStart, columnStart, lineEnd, columnEnd, solExists = 0;
-    readData(&labyrinth, &n, &m, &lineStart, &columnStart, &lineEnd, &columnEnd, ptr);
+    int **labyrinth, n, m, lineStart, columnStart, solExists = 0;
+    readData(&labyrinth, &n, &m, &lineStart, &columnStart, ptr);
     cell *solution;
     solution = (cell *) malloc(n * m * sizeof(cell));
-    solve(labyrinth, n, m, lineStart, columnStart, lineEnd, columnEnd, 0, solution, &solExists);
+    solve(labyrinth, n, m, lineStart, columnStart, 0, solution, &solExists);
     if (!solExists)
         printf("No solution");
     for(int i = 0; i < n; i++)
