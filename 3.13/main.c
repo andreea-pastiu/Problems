@@ -41,7 +41,7 @@ int canGo (cell *solution, int solLength, int** labyrinth, int n, int m, int lin
     for (i = 0; i <= solLength; i++)
         if (lineNext == solution[i].line && columnNext == solution[i].column)
             v = 0;
-    if (columnNext < 0 || columnNext > n - 1 || lineNext < 0 || lineNext > n - 1)
+    if (columnNext < 0 || columnNext > m - 1 || lineNext < 0 || lineNext > n - 1)
         v = 0;
     else
         if (labyrinth[lineNext][columnNext] == 0)
