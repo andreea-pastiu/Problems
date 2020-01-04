@@ -9,22 +9,12 @@ typedef struct dir
 {
     int line, column;
 }direction;
-direction dir[8]={{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+direction dir[8]={{-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2}, {-2, -1}};
 typedef struct el
 {
     int line, column, directionNo;
 }cell;
-void readData(int ***board, int *n, int *lineStart, int *columnStart, int *lineEnd, int *columnEnd, int *ptr)
-{
-    fscanf(ptr, "%d%d%d%d%d%d", n, lineStart, columnStart, lineEnd, columnEnd);
-    (*board) = (int**) malloc((*n) * sizeof(int*));
-    for (int i = 0; i < (*n); i++)
-    {
-        (*board)[i] = (int *) malloc((*n) * sizeof(int));
-        for (int j = 0; j < (*n); j++)
-            fscanf(ptr, "%d", &(*board)[i][j]);
-    }
-}
+
 void printSolution(cell *solution, int solLength, int *solExists)
 {
     int i;
@@ -41,24 +31,21 @@ int canGo (cell *solution, int solLength, int** board, int n, int lineNext, int 
             v = 0;
     if (columnNext < 0 || columnNext > n - 1 || lineNext < 0 || lineNext > n - 1)
         v = 0;
-    else
-    if (board[lineNext][columnNext] == 0)
-        v = 0;
     return v;
 }
-void solve(int **board, int n, int lineStart, int columnStart, int lineEnd, int columnEnd, int solLength, cell *solution, int *solExists)
+void solve(int **board, int n, int lineStart, int columnStart, int solLength, cell *solution, int *solExists)
 {
     int lineNext, columnNext;
     solution[solLength].line = lineStart;
     solution[solLength].column = columnStart;
     solution[solLength].directionNo = -1;
-    while (solution[solLength].directionNo < 3)
+    while (solution[solLength].directionNo < 7)
     {
         solution[solLength].directionNo++;
         lineNext = solution[solLength].line + dir[solution[solLength].directionNo].line;
         columnNext = solution[solLength].column + dir[solution[solLength].directionNo].column;
         if (canGo(solution, solLength, board, n, lineNext, columnNext))
-            if (lineNext == lineEnd && columnNext == columnEnd)
+            if (solLength == n*n-2)
             {
                 solution[solLength + 1].line = lineNext;
                 solution[solLength + 1].column = columnNext;
@@ -66,32 +53,25 @@ void solve(int **board, int n, int lineStart, int columnStart, int lineEnd, int 
             }
             else
             {
-                solve(board, n, lineNext, columnNext, lineEnd, columnEnd, solLength + 1, solution, solExists);
+                solve(board, n, lineNext, columnNext, solLength + 1, solution, solExists);
             }
     }
 }
 
 int main()
 {
-    FILE *ptr = fopen("..\\in.txt", "r");
-    if (ptr == NULL)
-    {
-        printf("No input file");
-        exit(0);
-    }
-    int **board, n, lineStart, columnStart, lineEnd, columnEnd, solExists = 0;
-    readData(&board, &n, &lineStart, &columnStart, &lineEnd, &columnEnd, ptr);
+    int **board, n, lineStart=0, columnStart=0, solExists = 0;
+    printf("Give n: ");
+    scanf("%d", &n);
     cell *solution;
     solution = (cell *) malloc(n * n * sizeof(cell));
-    solve(board, n, lineStart, columnStart, lineEnd, columnEnd, 0, solution, &solExists);
+    solve(board, n, lineStart, columnStart, 0, solution, &solExists);
     if (!solExists)
         printf("No solution");
     for(int i = 0; i < n; i++)
         free(board[i]);
     free(board);
     free(solution);
-
-    fclose(ptr);
 
     return 0;
 }
